@@ -41,8 +41,8 @@ services:
       PURGER_PUBLIC_SITES: "['ploneconf2024.localhost']"
 
   varnish:
-    build:
-      context: devops/varnish
+    image: ghcr.io/ericof/ploneconf2024-varnish:latest
+    platform: linux/amd64
     labels:
       - traefik.enable=true
       - traefik.constraint-label=public
@@ -51,10 +51,8 @@ services:
     depends_on:
       - backend
   frontend:
-    build:
-      context: ./frontend
-      args:
-        - VOLTO_VERSION=${VOLTO_VERSION}
+    image: ghcr.io/ericof/ploneconf2024-frontend:latest
+    platform: linux/amd64
     environment:
       RAZZLE_INTERNAL_API_PATH: http://backend:8080/Plone
     depends_on:
@@ -77,12 +75,10 @@ services:
       - traefik.http.routers.rt-frontend-internal.service=svc-frontend
 
   backend:
-    build:
-      context: ./backend
-      args:
-        - PLONE_VERSION=${PLONE_VERSION}
+    image: ghcr.io/ericof/ploneconf2024-backend:latest
+    platform: linux/amd64
     environment:
-      RELSTORAGE_DSN: "dbname='${DB_NAME:-plone}' user='${DB_NAME:-plone}' host='${DB_HOST:-db}' password='${DB_PASSWORD:-PVJcUnAzwGyz}' port='${DB_PORT:-5432}'"
+      RELSTORAGE_DSN: "dbname='${DB_NAME:-plone}' user='${DB_NAME:-plone}' host='${DB_HOST:-db}' password='${DB_PASSWORD:-HGjUOABduBsc}' port='${DB_PORT:-5432}'"
     depends_on:
       - db
     labels:
@@ -129,7 +125,7 @@ services:
     image: postgres:14.15
     environment:
       POSTGRES_USER: plone
-      POSTGRES_PASSWORD: PVJcUnAzwGyz
+      POSTGRES_PASSWORD: HGjUOABduBsc
       POSTGRES_DB: plone
     volumes:
       - vol-site-data:/var/lib/postgresql/data
